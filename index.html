@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;--border-radius-lg:12px;--border-radius-md:8px;--color-text-primary:#111827;--color-text-secondary:#6b7280;--color-text-success:#166534;--color-text-warning:#92400e;--color-background-primary:#fff;--color-background-secondary:#f9fafb;--color-background-success:#dcfce7;--color-background-warning:#fef3c7;--color-border-secondary:#e5e7eb;--color-border-tertiary:#e5e7eb}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e5e7eb;--color-text-secondary:#9ca3af;--color-text-success:#4ade80;--color-text-warning:#fbbf24;--color-background:#1f1f1e;--color-background-primary:#0b0f19;--color-background-primary:#2c2c2a;--color-background-secondary:#111827;--color-background-success:#052e16;--color-background-warning:#3f2a05;--color-border-secondary:#454543;--color-border-tertiary:#454543}}
+    body{font-family:var(--font-sans);background-color:var(--color-background);color:var(--color-text-primary);padding-top: 3rem;padding-bottom: 3rem;}
+    .container{max-width:800px;margin:0 auto;padding:0 16px;}
+    .mm-wrap{padding:16px 0}
+    .mm-section{margin-bottom:10px;border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+    .mm-header{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none}
+    .mm-header:hover{filter:brightness(0.97)}
+    .mm-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+    .mm-title{font-size:14px;font-weight:500;flex:1}
+    .mm-chevron{font-size:11px;transition:transform .2s;opacity:.6}
+    .mm-chevron.open{transform:rotate(90deg)}
+    .mm-body{display:none;padding:12px 16px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+    .mm-body.open{display:block}
+    .mm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+    .mm-node{border-radius:var(--border-radius-md);padding:10px 12px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background)}
+    .mm-node-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+    .mm-node-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+    .mm-node-sub span{display:block;padding-left:8px;position:relative}
+    .mm-node-sub span::before{content:'·';position:absolute;left:0}
+    .new-tag{font-size:10px;font-weight:500;padding:1px 5px;border-radius:4px;margin-left:5px;background:var(--color-background-success);color:var(--color-text-success);vertical-align:middle}
+    .upd-tag{font-size:10px;font-weight:500;padding:1px 5px;border-radius:4px;margin-left:5px;background:var(--color-background-warning);color:var(--color-text-warning);vertical-align:middle}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+  
+    <h2 class="sr-only" align="center">Shopify Wishlist App — Mind Map</h2>
+    
+    <div class="mm-wrap">
+
+    <div class="mm-section" id="s1">
+      <div class="mm-header" onclick="toggle('s1')" style="background:var(--color-background-primary)">
+        <span class="mm-badge" style="background:#EEEDFE;color:#3C3489">1 — App setup</span>
+        <span class="mm-title" style="color:var(--color-text-primary)">Shopify app setup</span>
+        <span class="mm-chevron open" id="c1">▶</span>
+      </div>
+      <div class="mm-body open" id="b1">
+        <div class="mm-grid">
+          <div class="mm-node">
+            <div class="mm-node-title">Shopify CLI 3.x</div>
+            <div class="mm-node-sub">
+              <span>scaffold, dev, deploy commands</span>
+              <span>theme app extension sub-commands</span>
+              <span>hot reload in dev mode</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">App Bridge 4</div>
+            <div class="mm-node-sub">
+              <span>session token auth (not cookies)</span>
+              <span>postMessage storefront comms</span>
+              <span>mandatory for embedded apps</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">Node.js + Remix backend <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>Shopify default scaffold stack</span>
+              <span>Remix loader/action for API routes</span>
+              <span>@shopify/shopify-app-remix package</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">OAuth scopes <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>read_products</span>
+              <span>read_themes</span>
+              <span>read_customers (added)</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">Managed install flow <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>Shopify handles OAuth via CLI</span>
+              <span>Partners dashboard config</span>
+              <span>no custom OAuth implementation</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">App Store listing <span class="new-tag">new</span></div>
+            <div class="mm-node-sub">
+              <span>public listing (not custom/private)</span>
+              <span>App Store review compliance required</span>
+              <span>GDPR webhooks mandatory</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mm-section" id="s2">
+      <div class="mm-header" onclick="toggle('s2')" style="background:var(--color-background-primary)">
+        <span class="mm-badge" style="background:#E1F5EE;color:#085041">2 — Theme</span>
+        <span class="mm-title" style="color:var(--color-text-primary)">Theme integration</span>
+        <span class="mm-chevron open" id="c2">▶</span>
+      </div>
+      <div class="mm-body open" id="b2">
+        <div class="mm-grid">
+          <div class="mm-node">
+            <div class="mm-node-title">OS 2.0 only <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>no legacy theme support</span>
+              <span>JSON template architecture required</span>
+              <span>Dawn + any OS2.0 theme compatible</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">App Embed Block <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>sitewide injection (body target)</span>
+              <span>no section editing required</span>
+              <span>merchant enables in theme editor</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">blocks/app-embed.liquid <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>single file: JS + CSS + schema</span>
+              <span>replaces blocks/wishlist-button.liquid</span>
+              <span>type: "block", target: "body"</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">Product data via AJAX <span class="upd-tag">updated</span></div>
+            <div class="mm-node-sub">
+              <span>/products/{handle}.js at runtime</span>
+              <span>no data-* attribute dependency</span>
+              <span>always fresh product data</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">CSS selector config</div>
+            <div class="mm-node-sub">
+              <span>merchant sets product card selector</span>
+              <span>configured in theme editor only</span>
+              <span>stored in schema.json settings</span>
+            </div>
+          </div>
+          <div class="mm-node">
+            <div class="mm-node-title">schema.json settings</div>
+            <div class="mm-node-sub">
+              <span>selector CSS class input</span>
+              <span>button style (filled / outline)</span>
+              <span>icon style (heart / bookmark)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mm-section" id="s3">
+    <div class="mm-header" onclick="toggle('s3')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#E6F1FB;color:#0C447C">3 — JS</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">Frontend JavaScript</span>
+      <span class="mm-chevron open" id="c3">▶</span>
+    </div>
+    <div class="mm-body open" id="b3">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">Web Components <span class="upd-tag">updated</span></div>
+        <div class="mm-node-sub">
+          <span>class extends HTMLElement</span>
+          <span>Shadow DOM: TBD</span>
+          <span>loaded via &lt;script defer&gt; in TAE</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Selector scanner</div>
+        <div class="mm-node-sub">
+          <span>runs on DOMContentLoaded</span>
+          <span>MutationObserver for infinite scroll</span>
+          <span>attaches button to each product card</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Event delegation</div>
+        <div class="mm-node-sub">
+          <span>single listener on document</span>
+          <span>debounced click handler</span>
+          <span>resolves product handle from DOM</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Product data model</div>
+        <div class="mm-node-sub">
+          <span>id, handle, title, price</span>
+          <span>compareAtPrice, featuredImage</span>
+          <span>available, url, addedAt</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Guest + logged-in <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>guests: localStorage only</span>
+          <span>logged-in: local + metafield sync</span>
+          <span>login: deduplicated union merge</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Storefront API sync <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>GraphQL via backend proxy</span>
+          <span>token never exposed to browser</span>
+          <span>customerUpdate mutation for metafield</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Custom events</div>
+        <div class="mm-node-sub">
+          <span>wishlist:add on document</span>
+          <span>wishlist:remove on document</span>
+          <span>wishlist:sync (pending/synced/error)</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Public API methods</div>
+        <div class="mm-node-sub">
+          <span>add(product), remove(id)</span>
+          <span>toggle(id), has(id)</span>
+          <span>getAll(), clear()</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mm-section" id="s4">
+    <div class="mm-header" onclick="toggle('s4')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#FAECE7;color:#712B13">4 — UI</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">UI components</span>
+      <span class="mm-chevron open" id="c4">▶</span>
+    </div>
+    <div class="mm-body open" id="b4">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">Heart toggle button</div>
+        <div class="mm-node-sub">
+          <span>SVG heart, outline → filled</span>
+          <span>aria-label="Add/Remove from wishlist"</span>
+          <span>aria-pressed state</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Count badge in header</div>
+        <div class="mm-node-sub">
+          <span>item count on nav trigger icon</span>
+          <span>updates on add/remove events</span>
+          <span>hidden when count = 0</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Popup modal</div>
+        <div class="mm-node-sub">
+          <span>overlay + close button</span>
+          <span>focus trap on open</span>
+          <span>scroll lock on body, Esc closes</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Dedicated wishlist page</div>
+        <div class="mm-node-sub">
+          <span>page.wishlist.json OS2.0 template</span>
+          <span>assigned via admin to a page</span>
+          <span>same item cards as popup</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Item cards</div>
+        <div class="mm-node-sub">
+          <span>product image + title + price</span>
+          <span>compare-at strikethrough</span>
+          <span>in-stock / out-of-stock badge</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Item card actions</div>
+        <div class="mm-node-sub">
+          <span>Add to Cart (keeps in wishlist)</span>
+          <span>Move to Cart (removes from wishlist)</span>
+          <span>Remove button</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Share wishlist <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>generate shareable URL</span>
+          <span>email share option</span>
+          <span>encoded product IDs in query string</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Empty state</div>
+        <div class="mm-node-sub">
+          <span>shown when wishlist is empty</span>
+          <span>CTA to browse products</span>
+          <span>in both popup + page</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mm-section" id="s5">
+    <div class="mm-header" onclick="toggle('s5')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#FAEEDA;color:#633806">5 — Storage</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">Storage strategy</span>
+      <span class="mm-chevron open" id="c5">▶</span>
+    </div>
+    <div class="mm-body open" id="b5">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">localStorage (primary)</div>
+        <div class="mm-node-sub">
+          <span>key: wl__{shopDomain}</span>
+          <span>prevents multi-shop collisions</span>
+          <span>guests + logged-in users</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Local data schema</div>
+        <div class="mm-node-sub">
+          <span>version: 1</span>
+          <span>items: [ProductDataModel]</span>
+          <span>layoutPreference: "grid"|"list"</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Customer metafield <span class="upd-tag">updated</span></div>
+        <div class="mm-node-sub">
+          <span>single metafield, JSON array</span>
+          <span>stores product IDs only</span>
+          <span>product data fetched fresh on render</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Debounced batch sync <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>2s after last change fires</span>
+          <span>batches rapid add/remove actions</span>
+          <span>logged-in users only</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Failed sync queue <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>failed syncs queued in localStorage</span>
+          <span>silent retry on next page visit</span>
+          <span>no error UI shown to user</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Quota + fallback</div>
+        <div class="mm-node-sub">
+          <span>all reads/writes in try/catch</span>
+          <span>fallback to sessionStorage</span>
+          <span>handles private/incognito mode</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Multi-tab sync</div>
+        <div class="mm-node-sub">
+          <span>window.storage event listener</span>
+          <span>re-renders UI on external change</span>
+          <span>debounced to avoid thrashing</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Login merge logic <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>fetch metafield on login</span>
+          <span>deduplicated union of local + remote</span>
+          <span>write merged list back to metafield</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mm-section" id="s6">
+    <div class="mm-header" onclick="toggle('s6')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#EAF3DE;color:#27500A">6 — Sort / Filter</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">Sort and filter</span>
+      <span class="mm-chevron open" id="c6">▶</span>
+    </div>
+    <div class="mm-body open" id="b6">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">Server-side processing <span class="upd-tag">updated</span></div>
+        <div class="mm-node-sub">
+          <span>filter params sent to backend API</span>
+          <span>results returned fresh (not in-memory)</span>
+          <span>replaces client-side array mutations</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Sort options (6)</div>
+        <div class="mm-node-sub">
+          <span>price: low → high</span>
+          <span>price: high → low</span>
+          <span>A → Z, Z → A, newest, oldest</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Filter options</div>
+        <div class="mm-node-sub">
+          <span>in stock only</span>
+          <span>out of stock only</span>
+          <span>sent as query params to API</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Sort UI</div>
+        <div class="mm-node-sub">
+          <span>&lt;select&gt; dropdown</span>
+          <span>in popup header + page header</span>
+          <span>triggers API call on change</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Filter UI</div>
+        <div class="mm-node-sub">
+          <span>toggle chips / checkboxes</span>
+          <span>in popup header + page header</span>
+          <span>triggers API call on change</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mm-section" id="s7">
+    <div class="mm-header" onclick="toggle('s7')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#FBEAF0;color:#72243E">7 — Layout</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">Layout toggle</span>
+      <span class="mm-chevron open" id="c7">▶</span>
+    </div>
+    <div class="mm-body open" id="b7">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">Grid view</div>
+        <div class="mm-node-sub">
+          <span>CSS Grid, auto-fill</span>
+          <span>minmax(180px, 1fr) columns</span>
+          <span>image-top card style</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">List view <span class="upd-tag">updated</span></div>
+        <div class="mm-node-sub">
+          <span>Flexbox row layout</span>
+          <span>image left (fixed width)</span>
+          <span>product details right, full-width</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Switch button</div>
+        <div class="mm-node-sub">
+          <span>grid icon / list icon buttons</span>
+          <span>active state highlighted</span>
+          <span>in popup header + page header</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Persist in localStorage</div>
+        <div class="mm-node-sub">
+          <span>stored as layoutPreference field</span>
+          <span>device-local only (not synced)</span>
+          <span>restored on every open</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mm-section" id="s8">
+    <div class="mm-header" onclick="toggle('s8')" style="background:var(--color-background-primary)">
+      <span class="mm-badge" style="background:#F1EFE8;color:#444441">8 — Best practices</span>
+      <span class="mm-title" style="color:var(--color-text-primary)">Best practices</span>
+      <span class="mm-chevron open" id="c8">▶</span>
+    </div>
+    <div class="mm-body open" id="b8">
+    <div class="mm-grid">
+      <div class="mm-node">
+        <div class="mm-node-title">CSP</div>
+        <div class="mm-node-sub">
+          <span>frame-ancestors: shop.myshopify.com</span>
+          <span>frame-ancestors: admin.shopify.com</span>
+          <span>set on all backend responses</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">CORS</div>
+        <div class="mm-node-sub">
+          <span>Access-Control-Allow-Origin</span>
+          <span>scoped to shop domain only</span>
+          <span>on all API routes</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Storefront API auth <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>all calls via backend proxy</span>
+          <span>public storefront token never in browser</span>
+          <span>Remix action/loader handles requests</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">GDPR webhooks <span class="new-tag">new</span></div>
+        <div class="mm-node-sub">
+          <span>customers/data_request</span>
+          <span>customers/redact</span>
+          <span>shop/redact</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Accessibility</div>
+        <div class="mm-node-sub">
+          <span>role="dialog" + aria-modal="true"</span>
+          <span>aria-labelledby on modal</span>
+          <span>Esc closes, focus returns on close</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Performance</div>
+        <div class="mm-node-sub">
+          <span>&lt;script defer&gt; on TAE asset</span>
+          <span>IntersectionObserver for lazy images</span>
+          <span>debounce sort/filter input</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">Polaris + App Bridge UI <span class="upd-tag">updated</span></div>
+        <div class="mm-node-sub">
+          <span>Polaris React throughout admin UI</span>
+          <span>App Bridge components for nav/modal</span>
+          <span>not just settings page (full admin)</span>
+        </div>
+      </div>
+      <div class="mm-node">
+        <div class="mm-node-title">App Store compliance</div>
+        <div class="mm-node-sub">
+          <span>no PII to external servers</span>
+          <span>localStorage is first-party (GDPR ok)</span>
+          <span>metafield sync via proxied API only</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;padding:8px 4px 0;flex-wrap:wrap">
+      <span style="font-size:11px;color:var(--color-text-secondary)">Legend:</span>
+      <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--color-background-success);color:var(--color-text-success);font-weight:500">new</span>
+      <span style="font-size:11px;color:var(--color-text-secondary)">= not in original mind map</span>
+      <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--color-background-warning);color:var(--color-text-warning);font-weight:500">updated</span>
+      <span style="font-size:11px;color:var(--color-text-secondary)">= changed from original</span>
+      <button onclick="toggleAll(true)" style="margin-left:auto;font-size:11px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer">Expand all</button>
+      <button onclick="toggleAll(false)" style="font-size:11px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer">Collapse all</button>
+    </div>
+
+    </div>
+
+    <script>
+    function toggle(id){
+      const b=document.getElementById('b'+id.slice(1));
+      const c=document.getElementById('c'+id.slice(1));
+      const open=b.classList.toggle('open');
+      c.classList.toggle('open',open);
+    }
+    function toggleAll(open){
+      for(let i=1;i<=8;i++){
+        const b=document.getElementById('b'+i);
+        const c=document.getElementById('c'+i);
+        b.classList.toggle('open',open);
+        c.classList.toggle('open',open);
+      }
+    }
+    </script>
+  </div>
+</body>
+</html>
