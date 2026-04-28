@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); }
+    .tl-root { padding: 1rem 0 2rem; }
+    .tl-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+    .tl-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+    .tl-meta { font-size: 12px; color: var(--color-text-secondary); }
+    .tl-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; }
+    .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+    .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .phase-wrap { margin-bottom: 8px; border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); overflow: hidden; }
+    .phase-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; user-select: none; background: var(--color-background-primary); }
+    .phase-header:hover { filter: brightness(0.97); }
+    .ph-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+    .ph-label { font-size: 13px; font-weight: 500; flex: 1; color: var(--color-text-primary); }
+    .ph-hours { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; }
+    .ph-chev { font-size: 10px; color: var(--color-text-secondary); transition: transform .2s; }
+    .ph-chev.open { transform: rotate(90deg); }
+    .phase-body { border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); display: none; }
+    .phase-body.open { display: block; }
+    .day-row { display: flex; align-items: stretch; border-bottom: 0.5px solid var(--color-border-tertiary); }
+    .day-row:last-child { border-bottom: none; }
+    .day-label { width: 80px; flex-shrink: 0; padding: 10px 14px; border-right: 0.5px solid var(--color-border-tertiary); display: flex; flex-direction: column; justify-content: center; }
+    .day-num { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+    .day-sub { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+    .day-tasks { flex: 1; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .task-bar { display: flex; align-items: flex-start; gap: 8px; }
+    .task-type { width: 8px; height: 8px; border-radius: 2px; margin-top: 3px; flex-shrink: 0; }
+    .task-content { flex: 1; }
+    .task-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
+    .task-detail { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 2px; }
+    .task-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; }
+    .day-hours { width: 52px; flex-shrink: 0; padding: 10px 14px 10px 0; display: flex; align-items: center; justify-content: flex-end; }
+    .hrs-pill { font-size: 10px; color: var(--color-text-secondary); }
+    .summary-bar { display: flex; gap: 8px; padding: 10px 14px; background: var(--color-background-secondary); flex-wrap: wrap; }
+    .sum-item { font-size: 11px; color: var(--color-text-secondary); }
+    .sum-item strong { font-weight: 500; color: var(--color-text-primary); }
+    .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 1rem; }
+    .tot-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+    .tot-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+    .tot-val { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+    .tot-sub { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+    .note-box { margin-top: 1rem; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); padding: 10px 14px; background: var(--color-background-primary); }
+    .note-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .note-list { display: flex; flex-direction: column; gap: 4px; }
+    .note-item { font-size: 12px; color: var(--color-text-secondary); display: flex; gap: 6px; }
+    .note-dot { color: var(--color-text-secondary); flex-shrink: 0; }
+  </style>
+
+  <div class="container">
+    <div class="tl-root">
+      <h2 class="sr-only">Shopify Wishlist App — Full Project Timeline with Learning Phases</h2>
+
+      <div class="tl-header">
+        <div>
+          <div class="tl-title">Shopify Wishlist App — Project Timeline</div>
+          <div class="tl-meta" style="margin-top:3px">8 hrs/day · Includes foundation learning + full build</div>
+        </div>
+      </div>
+
+      <div class="tl-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div>Learning / Research</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>Setup / Config</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Frontend dev</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#D85A30"></div>Backend dev</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#D4537E"></div>Integration / Sync</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#639922"></div>QA / Polish</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#888780"></div>Review / Buffer</div>
+      </div>
+
+      <div id="phases"></div>
+
+      <div class="totals">
+        <div class="tot-card">
+          <div class="tot-label">Total duration</div>
+          <div class="tot-val">~21 days</div>
+          <div class="tot-sub">8 hrs each</div>
+        </div>
+        <div class="tot-card">
+          <div class="tot-label">Learning phase</div>
+          <div class="tot-val">6 days</div>
+          <div class="tot-sub">Remix, Polaris, GraphQL, Shopify</div>
+        </div>
+        <div class="tot-card">
+          <div class="tot-label">Build phase</div>
+          <div class="tot-val">12 days</div>
+          <div class="tot-sub">All 8 sections</div>
+        </div>
+        <div class="tot-card">
+          <div class="tot-label">QA + launch</div>
+          <div class="tot-val">3 days</div>
+          <div class="tot-sub">Testing, polish, compliance</div>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:1rem">
+        <div class="note-title">Guiding assumptions</div>
+        <div class="note-list">
+          <div class="note-item"><span class="note-dot">·</span><span>Learning days are structured: official Shopify docs + YouTube courses run in parallel (docs for accuracy, video for intuition)</span></div>
+          <div class="note-item"><span class="note-dot">·</span><span>Each learning day produces a small working prototype — learning is never passive</span></div>
+          <div class="note-item"><span class="note-dot">·</span><span>8 hours assumes focused deep work — adjust if working alongside other projects</span></div>
+          <div class="note-item"><span class="note-dot">·</span><span>Days 17–19 include buffer — real projects hit surprises, especially with Shopify's review requirements</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const C = {
+    learn: '#7F77DD',
+    setup: '#1D9E75',
+    front: '#378ADD',
+    back: '#D85A30',
+    sync: '#D4537E',
+    qa: '#639922',
+    buf: '#888780'
+  };
+  const TAG = {
+    learn: { bg: '#EEEDFE', color: '#3C3489' },
+    setup: { bg: '#E1F5EE', color: '#085041' },
+    front: { bg: '#E6F1FB', color: '#0C447C' },
+    back: { bg: '#FAECE7', color: '#712B13' },
+    sync: { bg: '#FBEAF0', color: '#72243E' },
+    qa: { bg: '#EAF3DE', color: '#27500A' },
+    buf: { bg: '#F1EFE8', color: '#444441' }
+  };
+
+  const phases = [
+    {
+      id: 'p1', label: 'Phase 1 — Foundation learning', hours: '~48 hrs (6 days)', open: true,
+      badge: { bg: '#EEEDFE', color: '#3C3489', text: 'Days 1–6' },
+      summary: 'Before writing a single line of app code, we build confidence across the Shopify ecosystem. Each day combines Shopify official docs with YouTube walkthroughs — the docs give us the authoritative answer, the video gives us the mental model.',
+      days: [
+        {
+          day: 'Day 1', sub: 'Remix basics', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'Remix fundamentals', detail: 'Loaders, actions, routes, nested layouts. Work through the official Remix tutorial end-to-end.', tags: ['learn', 'setup'] },
+            { type: 'learn', title: 'YouTube: Remix crash course', detail: '"Remix Run Full Tutorial" by Traversy Media or Kevin Powell — follow along to build intuition for data flow.', tags: ['learn'] },
+            { type: 'learn', title: 'Mini prototype', detail: 'Build a tiny Remix app with a form, loader, and action to cement the concepts before moving on.', tags: ['setup'] }
+          ]
+        },
+        {
+          day: 'Day 2', sub: 'Shopify CLI + App Bridge', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'Shopify CLI 3.x setup', detail: 'Scaffold a test app with `shopify app create`. Explore dev, deploy, and extension sub-commands.', tags: ['learn', 'setup'] },
+            { type: 'learn', title: 'App Bridge 4 deep dive', detail: 'Official Shopify docs on session token auth, postMessage, and embedded app requirements.', tags: ['learn'] },
+            { type: 'learn', title: 'YouTube: Shopify App Development Intro', detail: 'Shopify\'s own YouTube channel has an "App Development" series — watch the embedded app and App Bridge episodes.', tags: ['learn'] },
+            { type: 'learn', title: 'Outcome', detail: 'Have a working "Hello World" embedded app running in a dev store by end of day.', tags: ['setup'] }
+          ]
+        },
+        {
+          day: 'Day 3', sub: 'Polaris design system', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'Polaris React component library', detail: 'Read the official Polaris docs. Understand Layout, Page, Card, DataTable, and Modal components.', tags: ['learn'] },
+            { type: 'learn', title: 'YouTube: Polaris + Shopify Admin UI', detail: 'Search "Shopify Polaris React tutorial" — several devs have built walkthrough admin UIs on YouTube.', tags: ['learn'] },
+            { type: 'learn', title: 'Admin UI prototype', detail: 'Build a simple Polaris admin page inside the scaffold app with a settings form — mirrors what we\'ll build in Section 8.', tags: ['front', 'learn'] }
+          ]
+        },
+        {
+          day: 'Day 4', sub: 'GraphQL + Storefront API', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'GraphQL fundamentals', detail: 'Read the official GraphQL spec intro. Understand queries, mutations, variables, and fragments.', tags: ['learn'] },
+            { type: 'learn', title: 'Shopify Storefront API', detail: 'Official docs: how to query products, run customerUpdate mutation, and work with customer metafields.', tags: ['learn'] },
+            { type: 'learn', title: 'YouTube: GraphQL + Shopify', detail: '"Shopify Storefront API with GraphQL" tutorials — Coding With Ease and others have dedicated videos.', tags: ['learn'] },
+            { type: 'learn', title: 'Prototype the sync', detail: 'Write a small Node/Remix action that calls customerUpdate to write a test metafield value.', tags: ['back', 'learn'] }
+          ]
+        },
+        {
+          day: 'Day 5', sub: 'Theme App Extensions', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'Theme App Extension architecture', detail: 'Official docs: understand the extension folder structure, schema.json, blocks, and targets.', tags: ['learn'] },
+            { type: 'learn', title: 'App Embed Blocks', detail: 'Specifically study "body" target embed blocks — the exact pattern we\'ll use for the wishlist button injection.', tags: ['learn'] },
+            { type: 'learn', title: 'YouTube: TAE deep dive', detail: 'Search "Shopify Theme App Extension tutorial 2024" — Kalen Jordan and Shopify DevDegree both have good content.', tags: ['learn'] },
+            { type: 'learn', title: 'Liquid + OS 2.0', detail: 'Review Online Store 2.0 JSON template architecture. Understand how page.wishlist.json will be wired.', tags: ['learn'] }
+          ]
+        },
+        {
+          day: 'Day 6', sub: 'OAuth, GDPR & compliance', hrs: '8 hrs',
+          tasks: [
+            { type: 'learn', title: 'Managed install flow', detail: 'Shopify docs on the managed OAuth flow via CLI — understand Partners dashboard config and how scopes are requested.', tags: ['learn'] },
+            { type: 'learn', title: 'GDPR webhooks', detail: 'Study customers/data_request, customers/redact, shop/redact — mandatory for App Store listing.', tags: ['learn'] },
+            { type: 'learn', title: 'App Store review checklist', detail: 'Read Shopify\'s App Store review requirements. Note the CORS, CSP, and data handling requirements we\'ll implement.', tags: ['learn', 'qa'] },
+            { type: 'learn', title: 'Day 6 recap + plan', detail: 'Review all notes, finalize task breakdown for the build phase. Any gaps in understanding become a ticket.', tags: ['buf'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p2', label: 'Phase 2 — App scaffolding & setup', hours: '~16 hrs (2 days)', open: false,
+      badge: { bg: '#E1F5EE', color: '#085041', text: 'Days 7–8' },
+      days: [
+        {
+          day: 'Day 7', sub: 'Project scaffold', hrs: '8 hrs',
+          tasks: [
+            { type: 'setup', title: 'Shopify CLI app scaffold', detail: 'Run `shopify app create` with Remix template. Set up Partners dashboard, dev store, and local env vars.', tags: ['setup'] },
+            { type: 'setup', title: 'OAuth scopes config', detail: 'Add read_products, read_themes, read_customers to shopify.app.toml. Test managed install flow on dev store.', tags: ['setup'] },
+            { type: 'setup', title: 'Theme App Extension scaffold', detail: 'Add TAE sub-project. Create blocks/app-embed.liquid stub. Verify it loads in theme editor.', tags: ['setup', 'front'] },
+            { type: 'setup', title: 'App Store listing draft', detail: 'Start Partners dashboard listing. Note GDPR webhook requirements — set up stub handlers.', tags: ['setup'] }
+          ]
+        },
+        {
+          day: 'Day 8', sub: 'Backend foundation', hrs: '8 hrs',
+          tasks: [
+            { type: 'back', title: 'Remix routes structure', detail: 'Plan and scaffold all routes: /app (admin), /api/wishlist, /api/sync. Wire up Shopify session middleware.', tags: ['back', 'setup'] },
+            { type: 'back', title: 'CSP + CORS headers', detail: 'Implement frame-ancestors on all responses. Scope CORS to shop domain. Validate in dev store.', tags: ['back', 'setup'] },
+            { type: 'setup', title: 'GDPR webhook handlers', detail: 'Build customers/data_request, customers/redact, shop/redact stub endpoints. Will be fleshed out in QA phase.', tags: ['setup', 'back'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p3', label: 'Phase 3 — Theme integration (Sections 2–3)', hours: '~16 hrs (2 days)', open: false,
+      badge: { bg: '#E6F1FB', color: '#0C447C', text: 'Days 9–10' },
+      days: [
+        {
+          day: 'Day 9', sub: 'App embed block', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'blocks/app-embed.liquid', detail: 'Write the full embed block: schema.json settings (selector, button style, icon style), CSS skeleton, and script defer tag.', tags: ['front'] },
+            { type: 'front', title: 'Web Component scaffolding', detail: 'Define the WishlistButton custom element (class extends HTMLElement). Selector scanner on DOMContentLoaded.', tags: ['front'] },
+            { type: 'front', title: 'MutationObserver for infinite scroll', detail: 'Attach observer to detect new product cards appended to the DOM. Debounce the scanner.', tags: ['front'] },
+            { type: 'front', title: 'Product AJAX fetch', detail: 'Implement /products/{handle}.js fetch to pull fresh product data at runtime. Build the product data model.', tags: ['front'] }
+          ]
+        },
+        {
+          day: 'Day 10', sub: 'Event system + public API', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'Event delegation system', detail: 'Single listener on document. Debounced click handler. Resolves product handle from the DOM.', tags: ['front'] },
+            { type: 'front', title: 'Custom events', detail: 'Dispatch wishlist:add, wishlist:remove, wishlist:sync events on document with detail payloads.', tags: ['front'] },
+            { type: 'front', title: 'Public API methods', detail: 'Expose add(), remove(), toggle(), has(), getAll(), clear() on window.Wishlist. Document the interface.', tags: ['front'] },
+            { type: 'front', title: 'Smoke test in Dawn theme', detail: 'Verify button injection on collection and product pages. Check infinite scroll pages.', tags: ['qa'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p4', label: 'Phase 4 — Storage & sync (Section 5)', hours: '~16 hrs (2 days)', open: false,
+      badge: { bg: '#FAEEDA', color: '#633806', text: 'Days 11–12' },
+      days: [
+        {
+          day: 'Day 11', sub: 'localStorage engine', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'localStorage read/write', detail: 'Keyed as wl__{shopDomain}. Wraps all ops in try/catch with sessionStorage fallback for incognito mode.', tags: ['front'] },
+            { type: 'front', title: 'Multi-tab sync', detail: 'window.storage event listener. Re-render UI on external change. Debounced to avoid thrashing.', tags: ['front'] },
+            { type: 'front', title: 'Local data schema v1', detail: 'Implement version, items: [ProductDataModel], layoutPreference fields. Write migration guard for future schema bumps.', tags: ['front'] }
+          ]
+        },
+        {
+          day: 'Day 12', sub: 'Metafield sync', hrs: '8 hrs',
+          tasks: [
+            { type: 'sync', title: 'Backend proxy for Storefront API', detail: 'Remix action that accepts product ID arrays and calls customerUpdate mutation. Token never exposed to browser.', tags: ['back', 'sync'] },
+            { type: 'sync', title: 'Debounced batch sync (2s)', detail: 'Client fires sync 2s after last add/remove. Batches rapid actions. Logged-in users only.', tags: ['sync'] },
+            { type: 'sync', title: 'Failed sync queue', detail: 'Failed syncs queued in localStorage. Silent retry on next page visit. wishlist:sync events (pending/synced/error).', tags: ['sync'] },
+            { type: 'sync', title: 'Login merge logic', detail: 'On login: fetch metafield, compute deduplicated union of local + remote, write merged list back.', tags: ['sync'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p5', label: 'Phase 5 — UI components (Section 4)', hours: '~24 hrs (3 days)', open: false,
+      badge: { bg: '#FAECE7', color: '#712B13', text: 'Days 13–15' },
+      days: [
+        {
+          day: 'Day 13', sub: 'Heart button + badge', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'Heart toggle button', detail: 'SVG heart, outline → filled transition. aria-label="Add/Remove from wishlist", aria-pressed state. Attaches to each product card.', tags: ['front'] },
+            { type: 'front', title: 'Count badge in header', detail: 'Item count on nav trigger icon. Updates on wishlist:add / wishlist:remove events. Hidden when count = 0.', tags: ['front'] },
+            { type: 'front', title: 'Item cards component', detail: 'Product image + title + price + compare-at strikethrough + in-stock/out-of-stock badge. Reused in popup + page.', tags: ['front'] }
+          ]
+        },
+        {
+          day: 'Day 14', sub: 'Popup modal + empty state', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'Popup modal', detail: 'Overlay + close button. Focus trap on open. Scroll lock on body. Esc closes, focus returns to trigger on close.', tags: ['front'] },
+            { type: 'front', title: 'Accessibility', detail: 'role="dialog" + aria-modal="true" + aria-labelledby on modal. Full keyboard navigation.', tags: ['front', 'qa'] },
+            { type: 'front', title: 'Item card actions', detail: 'Add to Cart (keeps in wishlist), Move to Cart (removes), Remove button. Wire to public API.', tags: ['front'] },
+            { type: 'front', title: 'Empty state', detail: 'Shown when list is empty in both popup + page. CTA links to collection page.', tags: ['front'] }
+          ]
+        },
+        {
+          day: 'Day 15', sub: 'Dedicated page + share', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'page.wishlist.json template', detail: 'OS 2.0 JSON template. Assign to a page via admin. Same item cards component as popup.', tags: ['front', 'setup'] },
+            { type: 'front', title: 'Share wishlist feature', detail: 'Generate shareable URL with encoded product IDs in query string. Email share option.', tags: ['front'] },
+            { type: 'front', title: 'Sort / filter UI', detail: 'Sort <select> (6 options) + filter toggle chips. In popup header + page header. Triggers API call on change.', tags: ['front'] },
+            { type: 'front', title: 'Sort / filter backend', detail: 'Remix loader handles filter params server-side, returns fresh filtered product data (not in-memory mutations).', tags: ['back'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p6', label: 'Phase 6 — Layout toggle (Section 7)', hours: '~8 hrs (1 day)', open: false,
+      badge: { bg: '#FBEAF0', color: '#72243E', text: 'Day 16' },
+      days: [
+        {
+          day: 'Day 16', sub: 'Grid / list view', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'Grid view', detail: 'CSS Grid, auto-fill, minmax(180px, 1fr). Image-top card style. Default view.', tags: ['front'] },
+            { type: 'front', title: 'List view', detail: 'Flexbox row. Fixed-width image left, product details right, full-width actions.', tags: ['front'] },
+            { type: 'front', title: 'Switch button UI', detail: 'Grid icon / list icon toggle. Active state highlighted. In popup header + page header.', tags: ['front'] },
+            { type: 'front', title: 'Persist preference', detail: 'Store layoutPreference in localStorage. Device-local, not synced to metafield. Restored on every open.', tags: ['front'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p7', label: 'Phase 7 — Admin UI (Section 8 / Polaris)', hours: '~8 hrs (1 day)', open: false,
+      badge: { bg: '#E1F5EE', color: '#085041', text: 'Day 17' },
+      days: [
+        {
+          day: 'Day 17', sub: 'Polaris admin build', hrs: '8 hrs',
+          tasks: [
+            { type: 'front', title: 'Full admin UI with Polaris React', detail: 'Build settings page, analytics overview, and install guide using Polaris Layout, Page, Card, DataTable components.', tags: ['front'] },
+            { type: 'front', title: 'App Bridge components', detail: 'Nav, modals, and toasts via App Bridge — not just the settings page but the full admin experience.', tags: ['front'] },
+            { type: 'back', title: 'App Store listing finalisation', detail: 'Ensure no PII flows to external servers. Verify localStorage is first-party only. Review GDPR webhook handlers.', tags: ['back', 'qa'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'p8', label: 'Phase 8 — QA, performance & launch', hours: '~32 hrs (3+ days)', open: false,
+      badge: { bg: '#EAF3DE', color: '#27500A', text: 'Days 18–21' },
+      days: [
+        {
+          day: 'Day 18', sub: 'Cross-theme QA', hrs: '8 hrs',
+          tasks: [
+            { type: 'qa', title: 'Test on 3+ themes', detail: 'Dawn, Sense, Ride — verify CSS selector scanning, embed block, and popup work without conflicts.', tags: ['qa'] },
+            { type: 'qa', title: 'Guest vs logged-in flows', detail: 'Test full flow: guest adds items → logs in → verifies merge. Multi-tab sync test. Incognito mode fallback.', tags: ['qa'] },
+            { type: 'qa', title: 'Share wishlist QA', detail: 'Generate and open shared URLs. Verify encoded product IDs decode correctly and display correctly.', tags: ['qa'] }
+          ]
+        },
+        {
+          day: 'Day 19', sub: 'Performance + a11y', hrs: '8 hrs',
+          tasks: [
+            { type: 'qa', title: 'Script defer verification', detail: 'Confirm TAE asset loads with defer. Run Lighthouse on a collection page before and after install.', tags: ['qa'] },
+            { type: 'qa', title: 'IntersectionObserver lazy images', detail: 'Verify wishlist item card images load lazily in both popup and page view.', tags: ['qa'] },
+            { type: 'qa', title: 'Accessibility audit', detail: 'Screen reader test with VoiceOver/NVDA. Keyboard-only navigation through full wishlist flow.', tags: ['qa'] },
+            { type: 'qa', title: 'Debounce audit', detail: 'Verify sort/filter, sync, and MutationObserver debounces are all functioning as expected under rapid input.', tags: ['qa'] }
+          ]
+        },
+        {
+          day: 'Day 20', sub: 'App Store prep', hrs: '8 hrs',
+          tasks: [
+            { type: 'qa', title: 'GDPR webhooks end-to-end', detail: 'Trigger all three webhooks via Partners dashboard simulator. Verify correct handling and logging.', tags: ['qa', 'setup'] },
+            { type: 'setup', title: 'App Store listing completion', detail: 'Screenshots, description, pricing, support links. Review Shopify\'s App Store review checklist line by line.', tags: ['setup'] },
+            { type: 'buf', title: 'Bug triage + fixes', detail: 'Dedicated buffer for issues found during QA. No new features — only fixes and polish.', tags: ['buf'] }
+          ]
+        },
+        {
+          day: 'Day 21', sub: 'Deploy + submit', hrs: '8 hrs',
+          tasks: [
+            { type: 'setup', title: 'Production deploy', detail: 'Run `shopify app deploy`. Verify all environment variables, webhook URLs, and scopes are correct in production.', tags: ['setup'] },
+            { type: 'setup', title: 'App Store submission', detail: 'Submit for Shopify App Store review. Prepare responses to likely review questions.', tags: ['setup'] },
+            { type: 'buf', title: 'Documentation + handoff', detail: 'Write README, document the public JS API, and note any known limitations or future improvements.', tags: ['buf'] }
+          ]
+        }
+      ]
+    }
+  ];
+
+  function makeTag(t) {
+    const s = TAG[t] || TAG['buf'];
+    return `<span class="tag" style="background:${s.bg};color:${s.color}">${t}</span>`;
+  }
+
+  function renderPhase(p) {
+    const bodyOpen = p.open ? 'open' : '';
+    const chevOpen = p.open ? 'open' : '';
+    const days = p.days.map(d => {
+      const tasks = d.tasks.map(t => `
+        <div class="task-bar">
+          <div class="task-type" style="background:${C[t.type]}"></div>
+          <div class="task-content">
+            <div class="task-title">${t.title}</div>
+            <div class="task-detail">${t.detail}</div>
+            <div class="task-tags">${(t.tags||[]).map(makeTag).join('')}</div>
+          </div>
+        </div>
+      `).join('');
+      return `
+        <div class="day-row">
+          <div class="day-label"><div class="day-num">${d.day}</div><div class="day-sub">${d.sub}</div></div>
+          <div class="day-tasks">${tasks}</div>
+          <div class="day-hours"><span class="hrs-pill">${d.hrs}</span></div>
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="phase-wrap">
+        <div class="phase-header" onclick="togglePhase('${p.id}')">
+          <span class="ph-badge" style="background:${p.badge.bg};color:${p.badge.color}">${p.badge.text}</span>
+          <span class="ph-label">${p.label}</span>
+          <span class="ph-hours">${p.hours}</span>
+          <span class="ph-chev ${chevOpen}" id="chev-${p.id}">▶</span>
+        </div>
+        <div class="phase-body ${bodyOpen}" id="body-${p.id}">${days}</div>
+      </div>
+    `;
+  }
+
+  document.getElementById('phases').innerHTML = phases.map(renderPhase).join('');
+
+  function togglePhase(id) {
+    const b = document.getElementById('body-' + id);
+    const c = document.getElementById('chev-' + id);
+    const open = b.classList.toggle('open');
+    c.classList.toggle('open', open);
+  }
+  </script>
+
+</body>
+</html>
